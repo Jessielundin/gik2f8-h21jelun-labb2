@@ -279,6 +279,15 @@ function changeDesign(x) {
   );
 }
 
+customSort = (a, b) => {
+  const dateA = a.dueDate;
+  const dateB = b.dueDate;
+  if (dateA < dateB) return 1;
+  else if (dateA > dateB) return -1;
+  return 0;
+};
+
+
 /* Inuti funktionen kan ett objekt skickas till api-metoden update. Objektet ska som minst innehålla id på den uppgift som ska förändras, samt egenskapen 
 completed som true eller false, beroende på om uppgiften markerades som färdig eller ofärdig i gränssnittet. 
 
