@@ -219,12 +219,12 @@ function renderTask({ id, title, description, dueDate }) {
   
   När eventlyssnaren kopplas till knappen här nedanför, görs det däremot i HTML-kod och inte JavaScript. Man sätter ett HTML-attribut och refererar till eventlyssnarfunktionen istället. Då fungerar det annorlunda och parenteser är tillåtna. */
   let html = `
-    <li class="select-none mt-2 py-2 border-b border-amber-300">
+    <li class="select-none mt-2 py-2 border-b border-indigo-300">
       <div class="flex items-center">
-        <h3 class="mb-3 flex-1 text-xl font-bold text-pink-800 uppercase">${title}</h3>
+        <h3 class="mb-3 flex-1 text-xl font-bold text-cyan-700 uppercase">${title}</h3>
         <div>
           <span>${dueDate}</span>
-          <button onclick="deleteTask(${id})" class="inline-block bg-amber-500 text-xs text-amber-900 border border-white px-3 py-1 rounded-md ml-2">Ta bort</button>
+          <button onclick="deleteTask(${id})" class="inline-block bg-yellow-400 text-xs border border-white px-3 py-1 rounded-md ml-2">Ta bort</button>
         </div>
       </div>`;
 
