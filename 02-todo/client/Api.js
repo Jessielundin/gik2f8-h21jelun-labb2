@@ -157,12 +157,14 @@ class Api {
   
   */
 
+  // Update = PUT
   update(id) {
     return fetch(`${this.url}/${id}`, {
-      method: 'PATCH',
+      method: 'PUT'
     })
       .then((result) => result)
       .catch((err) => console.log(err));
   }
+
   /***********************Labb 2 ***********************/
 }

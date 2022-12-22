@@ -224,8 +224,10 @@ function renderList() {
 
     /* Koll om det finns någonting i tasks och om det är en array med längd större än 0 */
     if (tasks && tasks.length > 0) {
+      sortDate(tasks);
+      sortComp(tasks);
       /* Om tasks är en lista som har längd större än 0 loopas den igenom med forEach. forEach tar, likt then, en callbackfunktion. Callbackfunktionen tar emot namnet på varje enskilt element i arrayen, som i detta fall är ett objekt innehållande en uppgift.  */
-      tasks.forEach((task) => {
+        tasks.forEach((task) => {
         /* Om vi bryter ned nedanstående rad får vi något i stil med:
         1. todoListElement: ul där alla uppgifter ska finnas
         2. insertAdjacentHTML: DOM-metod som gör att HTML kan läggas till inuti ett element på en given position
@@ -248,7 +250,9 @@ Endast en uppgift åt gången kommer att skickas in här, eftersom den anropas i
 är en hel task som skickas in - men då hade man behövt skriva task.id, task.title osv. på alla ställen där man ville använda dem. Ett trick är alltså att 
 "bryta ut" dessa egenskaper direkt i funktionsdeklarationen istället. Så en hel task skickas in när funktionen anropas uppe i 
 todoListElement.insertAdjacentHTML("beforeend", renderTask(task)), men endast vissa egenskaper ur det task-objektet tas emot här i funktionsdeklarationen. */
-function renderTask({ id, title, description, dueDate }) {
+function renderTask({ id, title, description, dueDate, completed }) {
+  const itemStatus = completed == true ? "Checked" : " ";
+  const itemDone = completed == true ? "line-through  " : " ";
   /* Baserat på inskickade egenskaper hos task-objektet skapas HTML-kod med styling med hjälp av tailwind-klasser. Detta görs inuti en templatestring  
   (inom`` för att man ska kunna använda variabler inuti. Dessa skrivs inom ${}) */
 
@@ -267,10 +271,10 @@ function renderTask({ id, title, description, dueDate }) {
   När eventlyssnaren kopplas till knappen här nedanför, görs det däremot i HTML-kod och inte JavaScript. Man sätter ett HTML-attribut och refererar till
    eventlyssnarfunktionen istället. Då fungerar det annorlunda och parenteser är tillåtna. */
   let html = `
-    <li class="select-none mt-2 py-2 border-b border-indigo-300">
+    <li class="select-none mt-2 py-2 border-b border-indigo-300 ${itemDone}">
       <div class="flex items-center">
-        <input type="checkbox" onclick="">
-        <h3 class="mb-3 flex-1 text-xl font-bold text-cyan-700 uppercase">${title}</h3>
+      <input type="checkbox" value="${id}" onclick="updateItem(${id})" ${itemStatus}>
+        <h3 class="mb-3 flex-1 text-xl font-semibold text-cyan-700">${title}</h3>
         <div>
           <span>${dueDate}</span>
           <button onclick="deleteTask(${id})" class="inline-block bg-yellow-400 text-xs border border-white px-3 py-1 rounded-md ml-2">Ta bort</button>
@@ -342,18 +346,20 @@ Om du hittar något annat sätt som funkar för dig, använd för all del det, s
 /* Anropet till api.update ska följas av then(). then() behöver, som bör vara bekant vid det här laget, en callbackfunktion som ska hantera det som kommer 
 tillbaka från servern via vår api-klass. Inuti den funktionen bör listan med uppgifter renderas på nytt, så att den nyligen gjorda förändringen syns. */
 
-function updateTask(id) {
+/* uppdaterar en uppgift */
+function updateItem(id) {
   api.update(id).then((result) => {
-    renderList()
+    renderList();
   });
-  }
+}
 
-function sortDueDate(tasks) {
-  tasks.sort((f, l) => {
-    if (f.dueDate < l.dueDate){
+/* sorterar uppgifterna i datum-ordning */
+function sortDate(tasks) {
+  tasks.sort((a, b) => {
+    if (a.dueDate < b.dueDate){
       return -1;
     }
-    else if (f.dueDate > l.dueDate){
+    else if (a.dueDate > b.dueDate){
       return 1;
     }
     else {
@@ -362,16 +368,18 @@ function sortDueDate(tasks) {
   });
 }
 
-function sortFinished(tasks) {
+/* sorterar färdiga uppgifter */
+function sortComp(tasks) {
   tasks.sort((a, b) => {
-    if (a.completed && !b.completed) {
-      return 1;
-    } else if (!a.completed && b.completed) {
+    if (a.completed < b.completed){
       return -1;
     }
-    return 0;
+    else if (a.completed > b.completed){
+      return 1;
+    }
   });
 }
+
 
 /***********************Labb 2 ***********************/
 
