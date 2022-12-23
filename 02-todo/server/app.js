@@ -126,26 +126,30 @@ från lektion 5 och innehåller inte någon kod som används vidare under lektio
 /***********************Labb 2 ***********************/
 
 app.put('/tasks/:id', async(req,res) => {
+
   try {
     const id = req.params.id;
     const listBuffer = await fs.readFile("./tasks.json");
     const currentTasks = JSON.parse(listBuffer);
 
-    currentTasks.forEach(item => {
-      if (item.id == id && item.completed == false){
-        item.completed = true;
-      }      
-      else if (item.id == id && item.completed == true){
-        item.completed = false;
+    currentTasks.forEach(task => { /* forEach används för att det är en ul-lista */
+      if (task.id == id && task.completed == false) {
+        task.completed = true;
+      }
+
+      else if (task.id == id && task.completed == true) {
+        task.completed = false;
       }
     });
 
     await fs.writeFile("./tasks.json", JSON.stringify(currentTasks));
-    res.send({ messeage : `Task with ${id} is now updated!`})
+    res.send({ message : `Uppgift med ${id} har uppdaterats`})
   }
+  
   catch (error) {
     res.status(500).send({error: error.stack});
   }
-}); 
+});
+
 /* Med app.listen säger man åte servern att starta. Första argumentet är port - dvs. det portnummer man vill att servern ska köra på. Det sattes till 5000 på rad 9. Det andra argumentet är en anonym arrow-funktion som körs när servern har lyckats starta. Här skrivs bara ett meddelande ut som berättar att servern kör, så att man får feedback på att allt körts igång som det skulle. */
 app.listen(PORT, () => console.log('Server running on http://localhost:5000'));
